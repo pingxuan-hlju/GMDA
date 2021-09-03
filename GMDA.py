@@ -9,10 +9,6 @@ from sklearn.metrics import auc
 
 BATCH_SIZE = 1
 EPOCH = 1
-TPR_ALL = []
-FPR_ALL = []
-P_ALL = []
-MIN = 9999
 
 class generator(nn.Module):
     def __init__(self):
@@ -93,13 +89,10 @@ class Attention(nn.Module):
         batch = h_n_states1.size()[0]
         second_pad = Variable(torch.zeros(batch, h_n_states1.size()[1], length - h_n_states2.size()[2])).cuda()
         second_pad = torch.cat((h_n_states2, second_pad), dim=2)
-
         reslut = torch.cat((h_n_states1, second_pad), dim=1)
-
         temp_nodes = self.node1(reslut)
         temp_nodes = torch.tanh(temp_nodes)
         nodes_score = torch.matmul(temp_nodes, self.h_n_parameters)
-
         nodes_score = nodes_score.view(-1, 1, 2)
         beta = F.softmax(nodes_score, dim=2)
         y = torch.matmul(beta, reslut)
